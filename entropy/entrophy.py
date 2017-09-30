@@ -9,7 +9,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-p = np.linspace(0.001,0.999,num=100)
-entropy = -p*np.log(p)
+# Entropy as a function of probability --------
+# random sample for probabilities
+p = np.arange(0.01,1,0.01)
 
-plt.plot(p,entropy)
+# compute binary entropy
+entropy = -p*np.log2(p) - (1-p)*np.log2(1-p)
+
+# visualize
+plt.plot(p,entropy,linewidth=4,color='r',alpha=0.5)
+plt.ylabel('Entropy H(p)', fontsize=18)
+plt.xlabel('Probability p', fontsize=18)
+plt.tick_params(labelsize=18)
+plt.tight_layout()
