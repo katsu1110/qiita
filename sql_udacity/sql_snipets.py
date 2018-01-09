@@ -40,3 +40,71 @@ select ordernames.name, count(*) as num from animals, taxonomy, ordernames
 where animals.species = taxonomy.name and taxonomy.t_order = ordernames.t_order
 group by ordernames.name order by num desc;
 '''
+### Lesson 3 'Python DB-API'
+'''Use "winpty vagrant ssh" !'''
+# Contents ----------------------
+# Writing code with DB API ------------------------
+import sqlite3
+conn = sqlite3.connect("Cookies")
+cursor = conn.cursor()
+cursor.execute(
+        "select host_key from cookies limit 10")
+results = cursor.fetchall()
+print(results)
+conn.close()
+
+# Trying out DB API ---------------------------------------
+import sqlite3
+
+# Fetch some student records from the database.
+db = sqlite3.connect("students")
+c = db.cursor()
+query = "select name, id from students order by name;"
+c.execute(query)
+rows = c.fetchall()
+
+# First, what data structure did we get?
+print("Row data:")
+print(rows)
+
+# And let's loop over it too:
+print("Student names:")
+for row in rows:
+  print ("  ", row[0])
+
+db.close()
+
+# inserts in DB API
+db.commit()   # for atomicity!
+db.close()
+
+# Hello PostgreSQL ------------------------------------------
+# \dt ... list all the tables in the database
+# \dt+ ... list tables plus additional information 
+# \H ... switch between printing tables in plain text vs HTML
+# select * from posts \watch  ... display the contents of the table
+# and refresh it every two seconds
+
+# Update, Delete
+import psycopg2
+
+DBNAME = "forum"
+
+def get_posts():
+  """Return all posts from the 'database', most recent first."""
+  db = psycopg2.connect(database=DBNAME)
+  c = db.cursor()
+  c.execute("select content, time from posts order by time desc;")
+  c.execute("update posts set content = 'cheese' where content like '%spam%';")
+  c.execute("delete from posts where content = 'cheese';")
+  return c.fetchall()
+  db.close()
+  
+def add_post(content):
+  """Add a post to the 'database' with the current timestamp."""
+  db = psycopg2.connect(database=DBNAME)
+  c = db.cursor()
+  c.execute("insert into posts values ('$s')", (content,))
+  db.commit()
+  db.close()
+
