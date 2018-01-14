@@ -108,3 +108,13 @@ def add_post(content):
   db.commit()
   db.close()
 
+### Lesson 4 'Deeper into SQL'
+# normlized design
+# 1) every row has the same number of columns
+# 2) there is a unique key, and everything in a row says something about the key
+# 3) facts that don't relate to the key belong in different tables
+# 4) tables shouldn't imply relationships between columns
+    
+# create table and types
+# create database name ['options];
+# drop database name ['options];
