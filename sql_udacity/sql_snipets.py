@@ -109,12 +109,59 @@ def add_post(content):
   db.close()
 
 ### Lesson 4 'Deeper into SQL'
-# normlized design
+# normlized design ------------------------
 # 1) every row has the same number of columns
 # 2) there is a unique key, and everything in a row says something about the key
 # 3) facts that don't relate to the key belong in different tables
 # 4) tables shouldn't imply relationships between columns
     
-# create table and types
-# create database name ['options];
-# drop database name ['options];
+# create table and types --------------------
+Query = '''
+create database name ['options'];
+drop database name ['options'];
+'''
+
+# references, foreign keys -------------------------------
+Query = '''
+create table students (id serial primary key, name text);
+create table courses (id text primary key, name text);
+create table grades (student integer references students(id),
+course text references courses(id), grade text);
+'''
+
+# self join ---------------------------------------------                       
+Query = '''
+select a.id, b.id from residences as a, residences as b
+where a.building = b.building and a.room = b.room
+and a.id < b.id;
+'''           
+
+# counting ----------------------------------------------
+Query = '''
+select count(*) from animals;
+select count(*) from animals where species = ''gorilla';
+select species, count(*) from animals group by species;
+select programs.name, count(bugs.filename) as num
+from programs left join bugs
+on programs.filename = bugs.filename
+group by programs.name
+order by num
+'''
+
+# subqueries --------------------------------------------
+Query = '''
+select avg(bigscore) from
+(select max(score) as bigscore from mooseball
+group by team) as maxes;
+
+select name, weight from players,
+(select avg(weight) as av from players) as subq
+where weight < av;
+'''
+
+# views -------------------------------------------------
+Query = '''
+create view viewname as select ...
+'''
+
+
