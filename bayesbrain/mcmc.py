@@ -3,9 +3,11 @@
 Created on Sat Feb 10 17:20:26 2018
 
 @author: katsuhisa
+
+Reproducing similar figures to Sanborn & Charter, Trends in Cognitive Science 2016.
+As a Bayesian sampling, a simple Metropolis-Hastings algorithm is implemented.
 """
 
-# Markov Chain Monte Carlo (MCMC) --simple implementations
 # libraries ------------------------------
 import numpy as np
 from scipy.stats import multivariate_normal
@@ -115,5 +117,9 @@ for i in range(4):
     axes[i].get_yaxis().set_ticks([])
     axes[i].get_xaxis().set_ticklabels([])
     axes[i].get_yaxis().set_ticklabels([])
+
+# iterations
+    
+# distributions of Metropolis hastings samples
 
 
