@@ -14,40 +14,34 @@ from scipy.stats import multivariate_normal
 import matplotlib.pyplot as plt
 from sklearn.neighbors import KernelDensity
 
+#%%
 # functions -----------------------------
 def target_params(disttype):
     """preset parameters for target distributions"""
     if disttype == 'round':
-        me = [2,2]
-        cov = [[1,0],[0,1]]
+        me = np.array([2,2])
+        cov = np.array([[1,0],[0,1]])
     elif disttype == 'correlated':
-        me = [2,2]
-        cov = [[1,0.9],[0.9,1]]
-    elif disttype == 'bimodal':
-        me = [[0,0],[6,6]]
-        cov = [[1,0],[0,1]]
+        me = np.array([2,2])
+        cov = np.array([[1,0.9],[0.9,1]])
     elif disttype == 'close_bimodal':
-        me = [[0,0],[10,10]]
-        cov = [[1,0],[0,1]]
-    return me, cov
-    
+        me = np.array([[0,0],[4,4]])
+        cov = np.array([[1,0],[0,1]])
+    elif disttype == 'bimodal':
+        me = np.array([[0,0],[10,10]])
+        cov = np.array([[1,0],[0,1]])
+    return me, cov    
         
 def target_rvs(N, disttype):
     """random samples from target distribution (bivariate Gaussian)"""
     me, cov = target_params(disttype)
-    if disttype == 'round' or 'correlated':
+    if disttype in ['round', 'correlated']:
         p = multivariate_normal(mean=me, cov=cov).rvs(size=N, random_state=1220).T
-        x = p[0]
-        y = p[1]
-    elif disttype == 'bimodal' or 'close_bimodal':
-        x = np.array([])
-        y = np.array([])
-        for w in range(1):
-            p = w*multivariate_normal(mean=me[0], cov=cov).rvs(size=round(N/2), random_state=1220).T \
-                + (1-w)*multivariate_normal(mean=me[1], cov=cov).rvs(size=int(N-round(N/2)), random_state=1220).T
-            x = np.append(x, p[0])
-            y = np.append(y, p[1])
-    return x, y
+        return p[0], p[1]
+    elif disttype in ['bimodal', 'close_bimodal']:
+        p1 = multivariate_normal(mean=me[0], cov=cov).rvs(size=round(N/2), random_state=1220).T 
+        p2 = multivariate_normal(mean=me[1], cov=cov).rvs(size=N-round(N/2), random_state=1220).T 
+        return np.hstack((p1[0],p2[0])), np.hstack((p1[1],p2[1]))
 
 def kde2D(x, y, bandwidth, xbins=100j, ybins=100j, **kwargs): 
     """Build 2D kernel density estimate (KDE)"""
@@ -69,9 +63,9 @@ def kde2D(x, y, bandwidth, xbins=100j, ybins=100j, **kwargs):
 def target_pdf(p, disttype):
     """target distribution (bivariate Gaussian)"""
     me, cov = target_params(disttype)
-    if disttype == 'round' or 'correlated':
+    if disttype == 'round' or disttype == 'correlated':
         prob = multivariate_normal.pdf(p, mean=me, cov=cov)
-    elif disttype == 'bimodal' or 'close_bimodal':
+    elif disttype == 'bimodal' or disttype == 'close_bimodal':
         prob0 = multivariate_normal.pdf(p, mean=me[0], cov=cov)
         prob1 = multivariate_normal.pdf(p, mean=me[1], cov=cov)
         prob = max([prob0, prob1])        
@@ -99,27 +93,63 @@ def mh(N, disttype):
             accept += 1
     return xs, ys, accept/N
 
+#%%
 # visualization similar to the Fig 1b in Sanborn & Charter 2016 -----------
 # preset parameters
 disttype = ['round', 'correlated', 'close_bimodal', 'bimodal']
+axisrange = [[-2, 6], [-2, 6], [-4, 9], [-4, 14]]
 plt.close('all')
 
 # probability distributions
-fig, axes = plt.subplots(1, 4)
+fig1, axes1 = plt.subplots(1, 4)
 for i in range(4):
     x, y = target_rvs(5000, disttype[i])
     xx, yy, zz = kde2D(x, y, 1)
-    axes[i].pcolormesh(xx, yy, zz)
-    axes[i].set_title(disttype[i])
-    axes[i].set_xlabel('x')
-    axes[i].set_ylabel('y')
-    axes[i].get_xaxis().set_ticks([])
-    axes[i].get_yaxis().set_ticks([])
-    axes[i].get_xaxis().set_ticklabels([])
-    axes[i].get_yaxis().set_ticklabels([])
+    axes1[i].pcolormesh(xx, yy, zz)
+    axes1[i].set_title(disttype[i])
+    axes1[i].set_xlabel('x')
+    axes1[i].set_ylabel('y')
+    axes1[i].get_xaxis().set_ticks([])
+    axes1[i].get_yaxis().set_ticks([])
+    axes1[i].get_xaxis().set_ticklabels([])
+    axes1[i].get_yaxis().set_ticklabels([])
 
-# iterations
+# iterations & MH samples
+fig2, axes2 = plt.subplots(2, 4)
+fig3, axes3 = plt.subplots(1, 4)
+for i in range(4):
+    # sampling
+    xs, ys, accept_ratio = mh(1000, disttype[i])
     
-# distributions of Metropolis hastings samples
-
-
+    # iteration
+    axes2[0,i].plot(np.arange(len(xs)), xs, '-ko', alpha=0.2)
+    axes2[0,i].set_title(disttype[i])
+    axes2[1,i].plot(np.arange(len(ys)), ys, '-ko', alpha=0.2)
+    axes2[1,i].set_xlabel('iteration')
+    axes2[0,i].set_ylabel('x')
+    axes2[1,i].set_ylabel('y')
+    axes2[0,i].get_xaxis().set_ticks([])
+    axes2[0,i].get_yaxis().set_ticks([])
+    axes2[0,i].get_xaxis().set_ticklabels([])
+    axes2[0,i].get_yaxis().set_ticklabels([])
+    axes2[0,i].set_ylim(axisrange[i][0], axisrange[i][1])
+    axes2[1,i].get_xaxis().set_ticks([])
+    axes2[1,i].get_yaxis().set_ticks([])
+    axes2[1,i].get_xaxis().set_ticklabels([])
+    axes2[1,i].get_yaxis().set_ticklabels([])
+    axes2[1,i].set_ylim(axisrange[i][0], axisrange[i][1])
+    
+    # sampling distributions
+    axes3[i].scatter(xs, ys, s=20, c='k', alpha=0.2)
+    axes3[i].set_title(disttype[i])
+    axes3[i].set_xlabel('x')
+    axes3[i].set_ylabel('y')
+    axes3[i].set_xlim(axisrange[i][0], axisrange[i][1])
+    axes3[i].set_ylim(axisrange[i][0], axisrange[i][1])
+    axes3[i].get_xaxis().set_ticks([])
+    axes3[i].get_yaxis().set_ticks([])
+    axes3[i].get_xaxis().set_ticklabels([])
+    axes3[i].get_yaxis().set_ticklabels([])
+    
+fig2.tight_layout()
+fig3.tight_layout()
