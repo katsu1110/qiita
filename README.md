@@ -2,6 +2,8 @@
 Scripts used for my posts on the Japanese-stackoverflow-like website [Qiita](https://qiita.com/katsu1110).
 
 ##list of my posts
+- [ベイジアンになりたい！ほぼゼロから始めるベイズ統計学 2 (統計的推定)](https://qiita.com/katsu1110/items/a3c74fa94c6f7dfd84c6)
+
 - [脳はベイジアンなのに、なぜ正しく確率の計算ができないのか？](https://qiita.com/katsu1110/items/0d204742c3d619a43a4f)
 
 - [「脳科学は終わったのか？」DeepMind創設者Demis Hassabisの答え](https://qiita.com/katsu1110/items/352f20ed91bf3299e155)

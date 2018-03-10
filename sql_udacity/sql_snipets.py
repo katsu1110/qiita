@@ -2,10 +2,12 @@
 """
 Created on Sat Jan  6 10:44:57 2018
 
+1, code snipets used in the online lecture 'Intro to Relational Databases' by Udacity
+2, contents summary from Kahn academy's SQL course
+
 @author: katsuhisa
 """
 
-'''code snipets used in the online lecture 'Intro to Relational Databases' by Udacity'''
 ### Lesson 1 'Data and Tables'
 # Contents ---------------------
 # Tables, Aggregations, Queries, Keys, Join
