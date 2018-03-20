@@ -49,8 +49,8 @@ def animate(i):
     '''for animation'''
     plt.cla()
     plt.axis('off')
-    plt.text(3.5, 6.7, "(P(A)=" + str(pa) + ", ", fontsize=15, color="k", ha="left")
-    plt.text(5, 6.7, "P(B)=" + str(pb) + ")", fontsize=15, color="k", ha="left")
+    plt.text(3.5, 6.7, "(P(A)=" + str(pa) + ", ", fontsize=12, color="k", ha="left")
+    plt.text(5, 6.7, "  P(B)=" + str(pb) + ")", fontsize=12, color="k", ha="left")
     plt.text(-0.5, 6.7, "AB", fontsize=20, color="r", ha="left")
     plt.text(0.5, 6.7, "Ax", fontsize=20, color="m", ha="left")
     plt.text(1.5, 6.7, "xB", fontsize=20, color="c", ha="left")
@@ -68,8 +68,8 @@ def animate(i):
 # visualize simulation steps
 ngene = 100
 N = 49
-pa = 0.5
-pb = 0.5
+pa = 0.51
+pb = 0.49
 results = wright_fisher_simulation(ngene, N, pa, pb)
 plt.close('all')
 fig = plt.figure()
