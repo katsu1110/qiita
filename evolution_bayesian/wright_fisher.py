@@ -5,6 +5,8 @@ Created on Sat Mar 17 15:51:50 2018
 Create animation of Wright-Fisher model simulation, which looks similar to
 the figure 1c in Suchow et al., 2017, Trends in Cognitive Science
 
+Implementation of "Wright-Fisher model"
+
 @author: katsuhisa
 """
 # libraries ------------------------------
