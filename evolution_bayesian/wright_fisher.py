@@ -16,22 +16,21 @@ import matplotlib.animation as animation
 
 #%%
 # functions -----------------------------
-def wright_fisher_simulation(repeat, N, p, q):
+def wright_fisher_simulation(repeat, N, p):
     '''simulation of Wright-Fisher model:
         repeat: the number of repeat in simulation
         N: the number of individuals in the population
-        p: the probability that allele A is held
-        q: the probability that allele B is held'''
-    # attribute allele A, B to individuals as 1st generation
-    gene = {"A": np.random.choice([0, 1], N, replace=True, p=[1-p, p]),
-            "B": np.random.choice([0, 1], N, replace=True, p=[1-q, q])}
+        p: the probability that gene A is held
+     '''   
+        # attribute allele 1, 1 to individuals as 1st generation
+    gene = {"allele1": np.random.choice([0, 1], N, replace=True, p=[1-p, p]),
+            "allele2": np.random.choice([0, 1], N, replace=True, p=[1-p, p])}
     results = [gene]
     # iterate Wright-Fisher process
     for r in np.arange(repeat-1):
-        p = np.sum(gene["A"]==1)/N
-        q = np.sum(gene["B"]==1)/N
-        gene = {"A": np.random.choice([0, 1], N, replace=True, p=[1-p, p]),
-            "B": np.random.choice([0, 1], N, replace=True, p=[1-q, q])}
+        p = (np.sum(gene["allele1"]==1) + np.sum(gene["allele2"]==1))/(2*N)
+        gene = {"allele1": np.random.choice([0, 1], N, replace=True, p=[1-p, p]),
+            "allele2": np.random.choice([0, 1], N, replace=True, p=[1-p, p])}
         results.append(gene)
     return results   
     
@@ -39,10 +38,8 @@ def allele_color(a, b):
     '''color code for pairs of allele'''
     if a==1 and b==1:
         col = "r"
-    elif a==1 and b==0:
-        col = "m"
-    elif a==0 and b==1:
-        col = "c"
+    elif (a==1 and b==0) or (a==0 and b==1):
+        col = "g"
     elif a==0 and b==0:
         col = "b"
     return col
@@ -51,11 +48,9 @@ def animate(i):
     '''for animation'''
     plt.cla()
     plt.axis('off')
-    plt.text(3.5, 6.7, "(P(A)=" + str(pa) + ", ", fontsize=12, color="k", ha="left")
-    plt.text(5, 6.7, "  P(B)=" + str(pb) + ")", fontsize=12, color="k", ha="left")
-    plt.text(-0.5, 6.7, "AB", fontsize=20, color="r", ha="left")
-    plt.text(0.5, 6.7, "Ax", fontsize=20, color="m", ha="left")
-    plt.text(1.5, 6.7, "xB", fontsize=20, color="c", ha="left")
+    plt.text(3.5, 6.7, "(P(A)=" + str(pa) + ")", fontsize=12, color="k", ha="left")
+    plt.text(0.5, 6.7, "AA", fontsize=20, color="r", ha="left")
+    plt.text(1.5, 6.7, "Ax", fontsize=20, color="g", ha="left")
     plt.text(2.5, 6.7, "xx", fontsize=20, color="b", ha="left")
     plt.text(1.7, -0.9, "generation " + str(i), fontsize=20, color="k", ha="left")
     if i <= ngene:
@@ -70,9 +65,8 @@ def animate(i):
 # visualize simulation steps
 ngene = 100
 N = 49
-pa = 0.51
-pb = 0.49
-results = wright_fisher_simulation(ngene, N, pa, pb)
+pa = 0.6
+results = wright_fisher_simulation(ngene, N, pa)
 plt.close('all')
 fig = plt.figure()
 ims = []
@@ -88,7 +82,7 @@ for gene in results:
     y = [0]
     c = []
     for n in np.arange(N):
-        c.append(allele_color(gene["A"][n], gene["B"][n]))
+        c.append(allele_color(gene["allele1"][n], gene["allele2"][n]))
         if x[-1]+1 >= ncol:
             x.append(0)
             y.append(y[-1]+1)
