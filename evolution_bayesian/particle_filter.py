@@ -24,11 +24,10 @@ n_remembered = lam/t + 0.05*np.random.rand(len(t))
 #%%
 # functions -----------------------------
 class ParticleFilter(object):
-    def __init__(self, y, n_particle, sigma_2, alpha_2):
+    def __init__(self, y, n_particle, sigma_2):
         self.y = y
         self.n_particle = n_particle
         self.sigma_2 = sigma_2
-        self.alpha_2 = alpha_2
         self.log_likelihood = -np.inf
 
     def norm_likelihood(self, y, x, s2):
@@ -48,7 +47,7 @@ class ParticleFilter(object):
         k = np.asanyarray([self.F_inv(w_cumsum, idx, val) for val in u])
         return k
 
-    def simulate(self, seed=71):
+    def simulate(self, seed=1220):
         np.random.seed(seed)
 
         # the number of data points in the time-series
@@ -60,8 +59,7 @@ class ParticleFilter(object):
 
         # initialization of x as the number of items to be remembered
 #        initial_x = np.random.normal(0, 1, size=self.n_particle)
-        sd = np.sqrt(self.alpha_2*self.sigma_2)
-        initial_x = self.y[0] + np.random.normal(0, sd, size=self.n_particle)
+        initial_x = self.y[0] + np.random.normal(0, self.sigma_2, size=self.n_particle)
         x_resampled[0] = initial_x
         x[0] = initial_x
 
@@ -74,10 +72,10 @@ class ParticleFilter(object):
             print("\r calculating... t={}".format(t), end="")
             for i in range(self.n_particle):
                 # v as a system noise
-                v = np.random.normal(0, sd) 
+                v = np.random.normal(0, self.sigma_2) 
                 x[t+1, i] = x_resampled[t, i] + v # add the system noise
                 # weights as particles' individual likelihood
-                w[t, i] = self.norm_likelihood(self.y[t], x[t+1, i], sd) 
+                w[t, i] = self.norm_likelihood(self.y[t], x[t+1, i], self.sigma_2) 
             w_normed[t] = w[t]/np.sum(w[t]) # normalization
             l[t] = np.log(np.sum(w[t])) # log likelihood
 
@@ -105,21 +103,24 @@ class ParticleFilter(object):
         plt.plot(range(T), self.y, "ob", markersize=8, alpha=0.4)
         plt.plot(self.get_filtered_value(), "g", linewidth=6, alpha=0.4)
         plt.legend(['data', 'fit'])
-        for t in range(T):
-            plt.scatter(np.ones(self.n_particle)*t, self.x[t], color="r", s=5, alpha=0.1)
+        plt.scatter(np.ones(self.n_particle)*0, self.x[0], color="r", 
+                        s=6, alpha=0.1)
+        for t in range(len(self.w_normed)):
+            # reflect the relative likelihood to the particle's marker size
+            zscore = (self.w_normed[t] - np.mean(self.w_normed[t]))/np.std(self.w_normed[t])
+            for e in range(self.n_particle):
+                plt.scatter(t, self.x[t+1][e], color="r", 
+                    s=6*(1 + zscore[e]), alpha=0.1)
+        
         plt.plot(range(T), np.zeros(T), '--k', alpha=0.1)
-#        plt.title("sigma^2={0}, alpha^2={1}, log likelihood={2:.3f}".format(self.sigma_2, 
-#                                                                                 self.alpha_2, 
-#                                                                                 self.log_likelihood))
         
 #%%
 # preset hyperparameters
 n_particle = 48
 sigma_2 = 2
-alpha_2 = sigma_2
 
 # apply a particle filter and visualize its result
-pf = ParticleFilter(n_remembered, n_particle, sigma_2, alpha_2)
+pf = ParticleFilter(n_remembered, n_particle, sigma_2)
 pf.simulate()
 plt.close('all')
 pf.draw_graph()
