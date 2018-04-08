@@ -2,7 +2,7 @@
 Scripts used for my posts on the Japanese-stackoverflow-like website [Qiita](https://qiita.com/katsu1110).
 
 ## list of my posts
-- [進化論も記憶も、どっちもベイジアンだっていうお話](https://qiita.com/katsu1110/items/1c221c3665188612f6ab)
+- [進化論も記憶も創造性も、ベイジアンだっていうお話](https://qiita.com/katsu1110/items/1c221c3665188612f6ab)
 
 - [ベイジアンになりたい！ほぼゼロから始めるベイズ統計学 2 (統計的推定)](https://qiita.com/katsu1110/items/a3c74fa94c6f7dfd84c6)
 
