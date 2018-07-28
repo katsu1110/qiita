@@ -2,6 +2,8 @@
 Scripts used for my posts on the Japanese-stackoverflow-like website [Qiita](https://qiita.com/katsu1110).
 
 ## list of my posts
+- [日本は科学技術分野でも男女格差がヤバすぎる](https://qiita.com/katsu1110/items/ecbe30b7f875ad8fb7ab)
+
 - [進化論も記憶も創造性も、ベイジアンだっていうお話](https://qiita.com/katsu1110/items/1c221c3665188612f6ab)
 
 - [ベイジアンになりたい！ほぼゼロから始めるベイズ統計学 2 (統計的推定)](https://qiita.com/katsu1110/items/a3c74fa94c6f7dfd84c6)
