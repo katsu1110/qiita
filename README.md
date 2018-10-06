@@ -2,6 +2,8 @@
 Scripts used for my posts on the Japanese-stackoverflow-like website [Qiita](https://qiita.com/katsu1110).
 
 ## list of my posts
+- [Google Colab上でKaggleのデータをロード、モデル訓練、提出の全てを行う](https://qiita.com/katsu1110/items/a8d508a1b6f07bd3a243)
+
 - [科学技術分野の日本の男女格差って……？](https://qiita.com/katsu1110/items/ecbe30b7f875ad8fb7ab)
 
 - [進化論も記憶も創造性も、ベイジアンだっていうお話](https://qiita.com/katsu1110/items/1c221c3665188612f6ab)
