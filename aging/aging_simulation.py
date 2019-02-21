@@ -41,17 +41,17 @@ def test(N, m, item_list, n_test):
         toc = time.clock() 
         rt[c] = toc - tic
         
-    return np.log10(np.mean(rt)), np.log10(np.mean(ans))
+    return -np.log10(np.mean(rt)), -np.log10(np.mean(ans))
 
 # Monte-Carlo simulation
-repeat = 1000
+repeat = 500
 old = np.zeros((repeat, 2))
 young = np.zeros((repeat, 2))
 N = 10000
 m = 5
 n_ratio_old = 40
 n_ratio_young = 20
-n_test = 10
+n_test = 100
 for r in np.arange(repeat):
     # initialize
     old_list = obtain_memory(N, m, n_ratio_old)
@@ -62,15 +62,16 @@ for r in np.arange(repeat):
     young[r, :] = test(N, m, young_list, n_test)
     
 # visualization
+plt.close('all')
 fig, ax = plt.subplots(1,2)
-ylabs = ['Processing duration', 'Estimation error']
+ylabs = ['Processing speed', 'sensitivity score']
 for k in np.arange(2):
     me = np.array([np.mean(young[:, k], axis=0), np.mean(old[:, k], axis=0)])
-    SEM = np.array([np.std(young[:, k], axis=0), np.std(old[:, k], axis=0)])
-    ax[k].bar(np.arange(2), me, yerr=SEM, align='center', color='green', ecolor='black')
+    ax[k].bar(np.arange(2), me, align='center', color='k', ecolor='k')
     ax[k].set_xticks(np.arange(2))
     ax[k].set_xticklabels(('young', 'old'))
     ax[k].set_ylabel(ylabs[k])
+    ax[k].set_ylim(me[1]-0.5, me[0]+0.5)
     
 fig.tight_layout()
 plt.show()    
